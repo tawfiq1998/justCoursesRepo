@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>CisT</title>
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<link rel="stylesheet" href="../assets/css/bootstrap.css" />
+	<link rel="stylesheet" href="../assets/css/Style.css" />
+	<link href="../assets/css/animate.min.css" rel="stylesheet" />
+
+
+	<h:outputStylesheet name="primeicons/primeicons.css"
+		library="primefaces" />
+	<script src="../assets/javascript/bootstrap.js"></script>
+
+
+</h:head>
+
+<h:body>
+
+	<h:form id="home">
+
+		<p:menubar>
+			<p:menuitem>
+				<p:commandButton oncomplete="PF('sidebar1').show()"
+					icon="pi pi-align-justify">
+				</p:commandButton>
+			</p:menuitem>
+
+			<p:menuitem>
+				<p:outputLabel
+					style="color:white;font-size:2em; margin-top: 0.23em;" value="CisT"></p:outputLabel>
+			</p:menuitem>
+
+
+			<f:facet name="options">
+				<p:commandButton style="margin: 0.4em;" type="button"
+					value="sign In" onclick="PF('signInDlg').show();" />
+			</f:facet>
+
+			<f:facet name="options">
+				<p:commandButton style="margin: 0.4em;" type="button"
+					value="sign up" onclick="PF('signUpDlg').show();" />
+			</f:facet>
+		</p:menubar>
+
+		<div class="bodyImg">
+			<p:messages id="msgs" closable="true"
+				style="width:500px; padding:0px;" />
+			<div class="services">
+				<div class="container">
+					<div class="row" align="center">
+						<div class="col-6  ">
+							<div class="service">
+								<p:selectOneMenu id="faculty" styleClass="sele"
+									value="#{homeBacking.selectdFaculty}"
+									style=" width:100% ; border-width: 0px !important">
+
+									<f:selectItem itemLabel="Select Faculty" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{homeBacking.faculty}" />
+									<p:ajax event="valueChange"
+										listener="#{homeBacking.onChooseFaculty}" update="home" />
+								</p:selectOneMenu>
+
+							</div>
+						</div>
+
+						<div class="col-6 ">
+							<div class="service">
+
+								<p:selectOneMenu id="department"
+									style=" width:100%;border-width: 0px !important "
+									value="#{homeBacking.selectedDepartment}"
+									disabled="#{homeBacking.enableDept}">
+									<f:selectItem itemLabel="Select Department" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{homeBacking.department}" />
+									<p:ajax event="valueChange"
+										listener="#{homeBacking.onChooseDept}" update="home" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br /> <br />
+			<div class="dataTable">
+				<div class="col-12 ">
+					<p:dataTable id="courcesTable" var="car"
+						value="#{dtLazyView.lazyModel}"
+						rendered="#{homeBacking.renderTable}" scrollable="true"
+						scrollHeight="350" selectionMode="single" lazy="true">
+
+						<f:facet name="header">
+							<h:outputText value="Courses Table" style="font-size:1.7em;" />
+							<p:outputPanel>
+								<p:inputText id="globalFilter"
+									onkeyup="PF('carsTable1').filter()"
+									placeholder="Search all fields" />
+							</p:outputPanel>
+						</f:facet>
+						<p:column headerText="Line Number" sortBy="#{car.color}"
+							style="	border-radius:0px; 
+							">
+							<h:outputText value="#{car.color}" />
+						</p:column>
+						<p:column headerText="Course Symbol" sortBy="#{car.id}"
+							style="	border-radius:0px;">
+							<h:outputText value="#{car.id}" />
+						</p:column>
+						<p:column headerText="Course Name" sortBy="#{car.year}"
+							style="	border-radius:0px;">
+							<h:outputText value="#{car.year}" />
+						</p:column>
+						<p:column headerText="Credit Hours" sortBy="#{car.brand}"
+							style="	border-radius:0px;">
+							<h:outputText value="#{car.brand}" />
+						</p:column>
+						<p:column style="width:32px;text-align: center">
+							<p:commandButton update=":form:carDetail" oncomplete=""
+								icon="pi pi-download" title="View">
+								<p:fileDownload value="#{fileDownloadView.file}" />
+
+								<f:setPropertyActionListener value="#{car}"
+									target="#{dtSelectionView.selectedCar}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</div>
+			</div>
+		</div>
+
+
+		<p:sidebar id="homeS" widgetVar="sidebar1">
+			<h2 style="font-weight: normal">Select Department</h2>
+			<br></br>
+			<h:panelGrid id="homePanel" columns="1" cellpadding="5">
+				<p:commandButton value="Home" icon="pi pi-home"
+					action="#{calculaterBacking.goToHome}" style="width:16em" />
+				<p:commandButton value="Calculater" icon="pi pi-plus"
+					action="#{homeBacking.goToCalender}" style="width:16em" />
+			</h:panelGrid>
+			<p:separator />
+			<div class="container " align="center">
+				<p:commandButton value="Cancel" oncomplete="PF('sidebar1').hide()" />
+			</div>
+		</p:sidebar>
+
+		<p:dialog header="sign In" widgetVar="signInDlg" resizable="false"
+			draggable="false">
+			<div class="container " align="center">
+				<br></br> <span class="ui-float-label"> <p:inputText
+						value="#{signerBacking.userName}" /> <p:outputLabel for="@previous"
+						value="Username" />
+				</span> <br></br> <span class="ui-float-label"> <p:password
+						value="#{signerBacking.password}" /> <p:outputLabel for="@previous"
+						value="Password" />
+				</span> <br></br>
+				<p:commandButton value="Submit" update="home"
+					action="#{signerBacking.loginInfo}" />
+			</div>
+		</p:dialog>
+
+		<p:dialog header="sign Up" widgetVar="signUpDlg" resizable="false"
+			draggable="false">
+			<div class="container " align="center">
+				<br></br> <span class="ui-float-label"> <p:inputText
+						value="#{signerBacking.newUserName}" /> <p:outputLabel
+						for="@previous" value="Username" />
+				</span> <br></br> <span class="ui-float-label"> <p:password
+						value="#{signerBacking.newPassword}" /> <p:outputLabel
+						for="@previous" value="Password" />
+				</span> <br></br> <br></br> <span class="ui-float-label"> <p:inputText
+						value="#{signerBacking.userDepartment}" /> <p:outputLabel
+						for="@previous" value="Department" />
+				</span>
+				<p:commandButton value="Submit" update="home"
+					action="#{signerBacking.singUp}" />
+			</div>
+		</p:dialog>
+
+	</h:form>
+</h:body>
+</html>
